@@ -1,0 +1,5 @@
+.git/
+.env
+*.swp
+.DS_Store
+*.log
