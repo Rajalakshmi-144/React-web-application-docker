@@ -2,22 +2,28 @@ pipeline {
     agent any
  
     stages {
+     
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()  // Clean the workspace before the build
+            }
+        }
     stage('Checkout') {
             steps {
                  checkout scm
             }
         }
-        stage('Change File Permissions') {
+         stage('Set Permissions') {
             steps {
-                sh 'chmod +x build.sh'
+                sh 'chmod +x build.sh' 
             }
         }
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
-                 sh './build.sh'
-                
+                sh './build.sh'  // Execute the script
             }
-        }
+        }      
+         
         stage('Push to dev Docker Hub') {
             when {
                 branch 'dev'
@@ -28,7 +34,7 @@ pipeline {
                     
                   }
         }
-        stage('Push to Prod (on Merge to Master)') {
+        stage('Push to Prod (on Merge to Main)') {
             when {
                 branch 'main'
             }
