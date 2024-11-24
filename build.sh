@@ -1,8 +1,6 @@
 #!/bin/bash
 
 
-DOCKER_USERNAME="rajalakshmi1404"
-DOCKER_PASSWORD="Raji@140494"
 echo "building the image"
 
 docker build -t rajalakshmi1404/react-image:dev .
