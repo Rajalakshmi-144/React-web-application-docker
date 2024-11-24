@@ -1,5 +1,5 @@
 #!bin/bash
-set -e
+
 echo "building the image"
 
 docker compose build
