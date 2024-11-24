@@ -28,7 +28,7 @@ pipeline {
                     
                   }
         }
-       stage('Push to Prod (on Merge to Master)') {
+        stage('Push to Prod (on Merge to Master)') {
             when {
                 branch 'main'
             }
@@ -36,9 +36,14 @@ pipeline {
               
                     echo 'Tagging and pushing Docker image to prod...'
                     sh 'docker tag rajalakshmi-1404/react-image:dev rajalakshmi-144/react-image-prod:prod'
-                    sh 'docker push rajalakshmi-1404/react-image-prod:prod'
-                    
+                    sh 'docker push rajalakshmi-1404/react-image-prod:prod'                  
                 
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the application...'
+                sh './deploy.sh'
             }
         }
     }
