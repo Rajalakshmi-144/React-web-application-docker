@@ -2,8 +2,10 @@
 
 echo "building the image"
 
-docker build -t rajalakshmi1404/react-image:dev .
+docker-compose build
 
+echo "tagging image"
+docker tag pipeline-react-app:latest rajalakshmi1404/react-image:dev        
 
 echo "login to dockerhub"
 

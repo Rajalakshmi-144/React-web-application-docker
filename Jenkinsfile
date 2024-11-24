@@ -4,12 +4,13 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                 checkout scm
+             git branch: 'dev', url: 'https://github.com/Rajalakshmi-144/React-web-application-docker'
             }
         }
         stage('Change File Permissions') {
             steps {
                 sh 'chmod +x build.sh'
+                sh 'chmod +x deploy.sh'
             }
         }
         stage('Build Docker Image') {
@@ -18,17 +19,7 @@ pipeline {
                 
             }
         }
-        stage('Push to dev Docker Hub') {
-            when {
-                branch 'dev'
-            }
-            steps {
-                    echo 'pushing the image to dockerhub dev repo'
-                    sh "docker push rajalakshmi1404/react-image:dev"
-                    
-                  }
-        }
-        stage('Push to Prod (on Merge to Main)') {
+            stage('Push to Prod (on Merge to Main)') {
             when {
                 branch 'main'
             }
@@ -44,6 +35,13 @@ pipeline {
             steps {
                 echo 'Deploying the application...'
                 sh './deploy.sh'
+            }
+        }
+        stage('Check Docker Containers') {
+            steps {
+                script {
+                    sh 'docker ps'
+                }
             }
         }
     }
