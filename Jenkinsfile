@@ -4,7 +4,7 @@ pipeline {
     stages {
     stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Rajalakshmi-144/React-web-application-docker'
+                 checkout scm
             }
         }
         stage('Change File Permissions') {
@@ -18,15 +18,25 @@ pipeline {
                 
             }
         }
-       stage('Push to prod Docker Hub') {
+        stage('Push to dev Docker Hub') {
+            when {
+                branch 'dev'
+            }
+            steps {
+                    echo 'pushing the image to dockerhub dev repo'
+                    sh "docker push rajalakshmi1404/react-image:dev"
+                    
+                  }
+        }
+       stage('Push to Prod (on Merge to Master)') {
             when {
                 branch 'main'
             }
             steps {
               
                     echo 'Tagging and pushing Docker image to prod...'
-                    sh 'docker tag Rajalakshmi-144/react-image:dev Rajalakshmi-144/react-image-prod:prod'
-                    sh 'docker push Rajalakshmi-144/react-image-prod:prod'
+                    sh 'docker tag rajalakshmi-1404/react-image:dev rajalakshmi-144/react-image-prod:prod'
+                    sh 'docker push rajalakshmi-1404/react-image-prod:prod'
                     
                 
             }
@@ -34,10 +44,10 @@ pipeline {
     }
     post {
         success {
-            echo 'Build and push to prod successful!'
+            echo 'pipeline executed successfully!'
         }
         failure {
-            echo 'Build or push to prod failed!'
+            echo 'pipeline failed!'
         }
     }
 }
