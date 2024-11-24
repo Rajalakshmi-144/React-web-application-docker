@@ -5,7 +5,7 @@ set -e
 
 echo "pulling the image from dockerhub"
 
-docker pull rajalakshmi1404/react-image:dev
+docker pull rajalakshmi1404/react-image-dev:latest
 
 #stop container if it is running
 
@@ -14,6 +14,6 @@ docker rm react-app|| true
 
 # deploy the container
 
-docker-compose up -d
+docker compose up -d
 
 echo "deployed the application"
