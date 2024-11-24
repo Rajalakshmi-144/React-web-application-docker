@@ -2,7 +2,7 @@
 
 echo "building the image"
 
-docker compose build
+docker-compose build
 
 IMAGE_NAME="rajalakshmi1404/react-image"
 DOCKER_USERNAME="rajalakshmi1404"

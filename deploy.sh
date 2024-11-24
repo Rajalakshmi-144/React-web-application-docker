@@ -11,6 +11,6 @@ docker rm react-app|| true
 
 # deploy the container
 
-docker compose up -d
+docker-compose up -d
 
 echo "deployed the application"
