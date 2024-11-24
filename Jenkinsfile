@@ -1,40 +1,34 @@
 pipeline {
     agent any
  
-    stages {
+    stages{
+
      
         stage('Clean Workspace') {
             steps {
                 cleanWs()  // Clean the workspace before the build
             }
-        }
-    stage('Checkout') {
-            steps {
-                 checkout scm
-            }
-        }
-         stage('Set Permissions') {
-            steps {
-                sh 'chmod +x build.sh' 
-            }
-        }
-        stage('Build') {
-            steps {
-                sh './build.sh'  // Execute the script
-            }
-        }      
+        }          
          
-        stage('Push to dev Docker Hub') {
-            when {
-                branch 'dev'
-            }
+        stage('Checkout') {
             steps {
-                    echo 'pushing the image to dockerhub dev repo'
-                    sh "docker push rajalakshmi1404/react-image:dev"
-                    
-                  }
+             git branch: 'dev', url: 'https://github.com/Rajalakshmi-144/React-web-application-docker'
+            }
+        }
+        stage('Change File Permissions') {
+            steps {
+                sh 'chmod +x build.sh'
+                sh 'chmod +x deploy.sh'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                 sh './build.sh'
+                
+            }
         }
         stage('Push to Prod (on Merge to Main)') {
+
             when {
                 branch 'main'
             }
@@ -43,7 +37,8 @@ pipeline {
                     echo 'Tagging and pushing Docker image to prod...'
                     sh 'docker tag rajalakshmi-1404/react-image:dev rajalakshmi-144/react-image-prod:prod'
                     sh 'docker push rajalakshmi-1404/react-image-prod:prod'                  
-                
+                                                
+
             }
         }
         stage('Deploy') {
@@ -53,6 +48,17 @@ pipeline {
             }
         }
     }
+
+        stage('Check Docker Containers') {
+            steps {
+                script {
+                    sh 'docker ps'
+                }
+            }
+        }
+    }
+
+
     post {
         success {
             echo 'pipeline executed successfully!'
@@ -62,4 +68,3 @@ pipeline {
         }
     }
 }
-         
