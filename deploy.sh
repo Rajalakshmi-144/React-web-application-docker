@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# exit the code if fails
-set -e
-
 echo "pulling the image from dockerhub"
 
 docker pull rajalakshmi1404/react-image:dev
