@@ -3,7 +3,7 @@ pipeline {
    
     environment {
         BRANCH_NAME = "${env.GIT_BRANCH}"
-        COMMIT_MESSAGE = "${env.git log -1 --pretty=%B}"
+        
     }
     
    stages {
@@ -11,7 +11,13 @@ pipeline {
             steps {
                 script {
                     echo "Current branch: ${env.GIT_BRANCH}"
-                    echo "commit message: ${env.git log -1 --pretty=%B}
+                    // Get the commit message
+                    def commitMessage = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
+                    
+                    // Print the commit message
+                    echo "Commit Message: ${commitMessage}"
+                    echo "Commit message from git : ${GIT_COMMIT}"
+
                 }
             }
         }
