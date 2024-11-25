@@ -30,11 +30,11 @@ pipeline {
             steps {
                 script {
                           
-                    if (env.BRANCH_NAME == 'dev') {
+                    if (env.BRANCH_NAME == 'origin/dev') {
                         echo "Pushing image to dev repository..."
                         sh 'docker tag react-build-image:latest rajalakshmi1404/react-image:dev'
                         sh 'docker push rajalakshmi1404/react-image:dev'
-                    } else if (env.BRANCH_NAME == 'main') {
+                    } else if (env.BRANCH_NAME == 'origin/main') {
                         echo "Pushing image to prod repository..."
                         sh 'docker tag react-build-image:latest rajalakshmi1404/react-image-prod:prod'
                         sh 'docker push rajalakshmi1404/react-image-prod:prod'
