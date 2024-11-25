@@ -1,26 +1,18 @@
 pipeline {
     agent any
    
-   
-     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-      stage('Get Branch Name') {
+    environment {
+        BRANCH_NAME = "${env.GIT_BRANCH}"
+    }
+    
+   stages {
+        stage('Check Branch Name') {
             steps {
                 script {
-                    // Get the branch name from Git
-                    def branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-                    echo "Current branch: ${branchName}"
-
-                    // Store in the environment variable for further use
-                    env.BRANCH_NAME = branchName
+                    echo "Current branch: ${env.GIT_BRANCH}"
                 }
             }
         }
-    
         stage('Change File Permissions') {
             steps {
                 sh 'chmod +x build.sh'
