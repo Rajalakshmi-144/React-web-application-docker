@@ -3,7 +3,7 @@ pipeline {
    
     environment {
         BRANCH_NAME = "${env.GIT_BRANCH}"
-        
+        commitMessage = ''
     }
     
    stages {
@@ -11,12 +11,18 @@ pipeline {
             steps {
                 script {
                     echo "Current branch: ${env.GIT_BRANCH}"
-                    // Get the commit message
-                    def commitMessage = sh(script: "git log -1 --pretty=%B", returnStdout: true).trim()
+                  }
+            }
+        }
                     
-                    // Print the commit message
-                    echo "Commit Message: ${commitMessage}"
-                    echo "Commit message from git : ${GIT_COMMIT}"
+                    
+          stage('Get Commit Message') {
+            steps {
+                script {
+                    // Get the latest commit message
+                    commitMessage = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
+                    echo "Latest Commit Message: ${commitMessage}"           
+                                     
 
                 }
             }
@@ -38,11 +44,11 @@ pipeline {
             steps {
                 script {
                           
-                    if (env.BRANCH_NAME == 'origin/dev') {
+                    if (BRANCH_NAME == 'origin/dev') {
                         echo "Pushing image to dev repository..."
                         sh 'docker tag react-build-image:latest rajalakshmi1404/react-image:dev'
                         sh 'docker push rajalakshmi1404/react-image:dev'
-                    } else if (env.BRANCH_NAME == 'origin/main') {
+                    } else if (BRANCH_NAME == 'origin/main' && commitMessage == 'merge from dev' ) {
                         echo "Pushing image to prod repository..."
                         sh 'docker tag react-build-image:latest rajalakshmi1404/react-image-prod:prod'
                         sh 'docker push rajalakshmi1404/react-image-prod:prod'
