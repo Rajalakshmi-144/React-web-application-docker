@@ -59,7 +59,7 @@ pipeline {
 
                         sh 'docker push rajalakshmi1404/react-image-prod:prod'
                     } else {
-                        echo "skipping the push."
+                        echo "skipping the push..."
                     }
                 }
             }
