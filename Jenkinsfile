@@ -4,39 +4,48 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-             git branch: 'dev', url: 'https://github.com/Rajalakshmi-144/React-web-application-docker'
+                checkout scm
             }
         }
+        
         stage('Change File Permissions') {
             steps {
                 sh 'chmod +x build.sh'
                 sh 'chmod +x deploy.sh'
             }
         }
+        
         stage('Build Docker Image') {
             steps {
-                 sh './build.sh'
-                
+                sh './build.sh'
             }
         }
-            stage('Push to Prod (on Merge to Main)') {
-            when {
-                branch 'main'
-            }
+        
+        stage('Push Docker Image') {
             steps {
-              
-                    echo 'Tagging and pushing Docker image to prod...'
-                    sh 'docker tag rajalakshmi-1404/react-image:dev rajalakshmi-144/react-image-prod:prod'
-                    sh 'docker push rajalakshmi-1404/react-image-prod:prod'
-                                  
+                script {
+                    if (env.BRANCH_NAME == 'dev') {
+                        echo "Pushing image to dev repository..."
+                        sh 'docker tag react-build-image:latest rajalakshmi1404/react-image:dev'
+                        sh 'docker push rajalakshmi1404/react-image:dev'
+                    } else if (env.BRANCH_NAME == 'main') {
+                        echo "Pushing image to prod repository..."
+                        sh 'docker tag react-build-image:latest rajalakshmi1404/react-image-prod:prod'
+                        sh 'docker push rajalakshmi1404/react-image-prod:prod'
+                    } else {
+                        echo "Not the dev or main branch, skipping push."
+                    }
+                }
             }
         }
+        
         stage('Deploy') {
             steps {
                 echo 'Deploying the application...'
                 sh './deploy.sh'
             }
         }
+        
         stage('Check Docker Containers') {
             steps {
                 script {
@@ -47,11 +56,15 @@ pipeline {
     }
 
     post {
+        always {
+            cleanWs()  // Cleans up workspace after the pipeline execution
+        }
         success {
-            echo 'pipeline executed successfully!'
+            echo 'Pipeline executed successfully!'
         }
         failure {
-            echo 'pipeline failed!'
+            echo 'Pipeline failed!'
         }
     }
 }
+

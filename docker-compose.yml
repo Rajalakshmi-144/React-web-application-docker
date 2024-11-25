@@ -5,6 +5,7 @@ version: '3.8'
 services:    # Defines the services (containers) that will run in your application.
   react-app:  # name of the service 
     build: .  # Docker Compose will build the Docker image using the Dockerfile in the current directory
+    image: react-build-image  #image name
     ports:
       - "8081:80" # Maps port 80 inside the container to port 8080 on your host machine
     container_name: react-app #name for the container.

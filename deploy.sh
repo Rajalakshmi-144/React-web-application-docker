@@ -1,9 +1,5 @@
 #!/bin/bash
 
-echo "pulling the image from dockerhub"
-
-docker pull rajalakshmi1404/react-image:dev
-
 #stop container if it is running
 
 docker stop react-app|| true
