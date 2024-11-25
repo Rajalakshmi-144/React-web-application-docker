@@ -15,7 +15,7 @@ pipeline {
                     def branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
                     echo "Current branch: ${branchName}"
 
-                    // Store it in the environment variable for further use
+                    // Store in the environment variable for further use
                     env.BRANCH_NAME = branchName
                 }
             }
