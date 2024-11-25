@@ -54,7 +54,8 @@ pipeline {
             }
         }
         
-        stage('Check Docker Containers') {
+        stage('Check Docker Containers')
+            {
             steps {
                 script {
                     sh 'docker ps'
