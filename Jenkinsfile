@@ -51,7 +51,7 @@ pipeline {
                         sh 'docker push rajalakshmi1404/react-image:dev'
 
                     } else if ((BRANCH_NAME == 'origin/main') && 
-                             (commit_message.toLowerCase().contains('merge') || commit_message.contains('dev'))) {
+                             (commitMessage.toLowerCase().contains('merge') || commitMessage.contains('dev'))) {
 
                         echo "Pushing image to prod repository..."
 
