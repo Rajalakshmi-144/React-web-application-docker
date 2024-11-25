@@ -1,18 +1,30 @@
 pipeline {
     agent any
- 
-    stages{
-
-     
-        stage('Clean Workspace') {
+   
+    environment {
+        BRANCH_NAME = "${env.GIT_BRANCH}"
+        commitMessage = ''
+    }
+    
+   stages {
+        stage('Check Branch Name') {
             steps {
-                cleanWs()  // Clean the workspace before the build
+                script {
+                    echo "Current branch: ${env.GIT_BRANCH}"
+                  }
             }
-        }          
-         
-        stage('Checkout') {
+        }
+                    
+                    
+          stage('Get Commit Message') {
             steps {
-             git branch: 'dev', url: 'https://github.com/Rajalakshmi-144/React-web-application-docker'
+                script {
+                    // Get the latest commit message
+                    commitMessage = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
+                    echo "Latest Commit Message: ${commitMessage}"           
+                                     
+
+                }
             }
         }
         stage('Change File Permissions') {
@@ -21,35 +33,41 @@ pipeline {
                 sh 'chmod +x deploy.sh'
             }
         }
+        
         stage('Build Docker Image') {
             steps {
-                 sh './build.sh'
-                
+                sh './build.sh'
             }
         }
-        stage('Push to Prod (on Merge to Main)') {
-
-            when {
-                branch 'main'
-            }
+        
+        stage('Push Docker Image') {
             steps {
-              
-                    echo 'Tagging and pushing Docker image to prod...'
-                    sh 'docker tag rajalakshmi-1404/react-image:dev rajalakshmi-144/react-image-prod:prod'
-                    sh 'docker push rajalakshmi-1404/react-image-prod:prod'                  
-                                                
-
+                script {
+                          
+                    if (BRANCH_NAME == 'origin/dev') {
+                        echo "Pushing image to dev repository..."
+                        sh 'docker tag react-build-image:latest rajalakshmi1404/react-image:dev'
+                        sh 'docker push rajalakshmi1404/react-image:dev'
+                    } else if (BRANCH_NAME == 'origin/main' && commitMessage == 'merge from dev' ) {
+                        echo "Pushing image to prod repository..."
+                        sh 'docker tag react-build-image:latest rajalakshmi1404/react-image-prod:prod'
+                        sh 'docker push rajalakshmi1404/react-image-prod:prod'
+                    } else {
+                        echo "Not the dev or main branch, skipping push."
+                    }
+                }
             }
         }
+        
         stage('Deploy') {
             steps {
                 echo 'Deploying the application...'
                 sh './deploy.sh'
             }
         }
-    }
-
-        stage('Check Docker Containers') {
+        
+        stage('Check Docker Containers')
+            {
             steps {
                 script {
                     sh 'docker ps'
@@ -58,13 +76,15 @@ pipeline {
         }
     }
 
-
     post {
+        always {
+            cleanWs()  
+        }
         success {
-            echo 'pipeline executed successfully!'
+            echo 'Pipeline executed successfully!'
         }
         failure {
-            echo 'pipeline failed!'
+            echo 'Pipeline failed!'
         }
     }
 }
