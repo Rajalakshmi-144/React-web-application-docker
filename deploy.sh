@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 #stop container if it is running
 
 docker stop react-app|| true
