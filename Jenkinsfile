@@ -3,6 +3,7 @@ pipeline {
    
     environment {
         BRANCH_NAME = "${env.GIT_BRANCH}"
+        COMMIT_MESSAGE = "${env.git log -1 --pretty=%B}"
     }
     
    stages {
@@ -10,6 +11,7 @@ pipeline {
             steps {
                 script {
                     echo "Current branch: ${env.GIT_BRANCH}"
+                    echo "commit message: ${env.git log -1 --pretty=%B}
                 }
             }
         }
