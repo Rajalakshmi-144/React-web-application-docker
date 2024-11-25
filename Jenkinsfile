@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        GIT_BRANCH = "${env.GIT_BRANCH}"
+    }
  
     stages {
         stage('Checkout') {
@@ -24,12 +27,12 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                          echo "Current branch: ${env.BRANCH_NAME}"
-                    if (${env.BRANCH_NAME} == 'dev') {
+                          echo "Current branch: ${env.GIT_BRANCH}"
+                    if (env.GIT_BRANCH == 'dev') {
                         echo "Pushing image to dev repository..."
                         sh 'docker tag react-build-image:latest rajalakshmi1404/react-image:dev'
                         sh 'docker push rajalakshmi1404/react-image:dev'
-                    } else if (${env.BRANCH_NAME} == 'main') {
+                    } else if (env.GIT_BRANCH == 'main') {
                         echo "Pushing image to prod repository..."
                         sh 'docker tag react-build-image:latest rajalakshmi1404/react-image-prod:prod'
                         sh 'docker push rajalakshmi1404/react-image-prod:prod'
