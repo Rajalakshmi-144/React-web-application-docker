@@ -19,7 +19,7 @@ pipeline {
           stage('Get Commit Message') {
             steps {
                 script {
-                    // Get the latest commit message
+                    
                     commitMessage = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
                     echo "Latest Commit Message: ${commitMessage}"           
                                      
@@ -42,18 +42,23 @@ pipeline {
         
         stage('Push Docker Image') {
             steps {
-                script {
-                          
+                script {                        
                     if (BRANCH_NAME == 'origin/dev') {
                         echo "Pushing image to dev repository..."
+
                         sh 'docker tag react-build-image:latest rajalakshmi1404/react-image:dev'
+
                         sh 'docker push rajalakshmi1404/react-image:dev'
+
                     } else if (BRANCH_NAME == 'origin/main' && commitMessage == 'merge from dev' ) {
+
                         echo "Pushing image to prod repository..."
+
                         sh 'docker tag react-build-image:latest rajalakshmi1404/react-image-prod:prod'
+
                         sh 'docker push rajalakshmi1404/react-image-prod:prod'
                     } else {
-                        echo "Not the dev or main branch, skipping push."
+                        echo "skipping the push."
                     }
                 }
             }
