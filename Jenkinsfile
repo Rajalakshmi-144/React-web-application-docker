@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     
-                    commitMessage = sh('git log -1 --pretty=%B', returnStdout: true).trim()     
+                    commitMessage = sh(script:'git log -1 --pretty=%B', returnStdout: true).trim()     
                                      
                }
             }
