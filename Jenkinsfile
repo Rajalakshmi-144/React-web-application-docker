@@ -20,11 +20,9 @@ pipeline {
             steps {
                 script {
                     
-                    commitMessage = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
-                    echo "Latest Commit Message: ${commitMessage}"           
+                    commitMessage = sh('git log -1 --pretty=%B', returnStdout: true).trim()     
                                      
-
-                }
+               }
             }
         }
         stage('Change File Permissions') {
@@ -51,7 +49,7 @@ pipeline {
                         sh 'docker push rajalakshmi1404/react-image:dev'
 
                     } else if ((BRANCH_NAME == 'origin/main') && 
-                             (commitMessage.toLowerCase().contains('merge') || commitMessage.contains('dev'))) {
+                             (commitMessage.toLowerCase().contains('merge') && commitMessage.contains('dev'))) {
 
                         echo "Pushing image to prod repository..."
 
