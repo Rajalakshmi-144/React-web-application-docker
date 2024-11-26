@@ -15,8 +15,8 @@ pipeline {
             }
         }
                     
-                    
-          stage('Get Commit Message') {
+                   
+        stage('Get Commit Message') {
             steps {
                 script {
                     
