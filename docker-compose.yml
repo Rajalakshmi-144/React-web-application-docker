@@ -1,11 +1,9 @@
-# version of Docker Compose syntax
+version: '3.8'    # version of Docker Compose
 
-version: '3.8'
-
-services:    # Defines the services (containers) that will run in your application.
+services:    # Defines the containers that will run in your application.
   react-app:  # name of the service 
     build: .  # Docker Compose will build the Docker image using the Dockerfile in the current directory
-    image: react-build-image  #image name
+    image: react-build-image  #name of the image
     ports:
       - "80:80" # Maps port 80 inside the container to port 80 on your host machine
     container_name: react-app #name for the container.
